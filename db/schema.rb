@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_05_184100) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_05_220809) do
   create_table "events", force: :cascade do |t|
     t.string "name"
     t.datetime "date"
@@ -28,6 +28,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_05_184100) do
     t.integer "admin_user_id"
   end
 
+  create_table "seats", force: :cascade do |t|
+    t.integer "event_id", null: false
+    t.string "seat_row"
+    t.string "seat_number"
+    t.decimal "price"
+    t.boolean "reserved"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_seats_on_event_id"
+  end
+
   create_table "tickets", force: :cascade do |t|
     t.string "seat_row"
     t.string "seat_number"
@@ -36,7 +47,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_05_184100) do
     t.integer "event_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "seat_id"
     t.index ["event_id"], name: "index_tickets_on_event_id"
+    t.index ["seat_id"], name: "index_tickets_on_seat_id"
     t.index ["user_id"], name: "index_tickets_on_user_id"
   end
 
@@ -48,6 +61,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_05_184100) do
   end
 
   add_foreign_key "events", "organizations"
+  add_foreign_key "seats", "events"
   add_foreign_key "tickets", "events"
+  add_foreign_key "tickets", "seats"
   add_foreign_key "tickets", "users"
 end
