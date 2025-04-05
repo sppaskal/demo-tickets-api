@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_05_173409) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_05_184100) do
   create_table "events", force: :cascade do |t|
     t.string "name"
     t.datetime "date"
@@ -25,6 +25,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_05_173409) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "admin_user_id"
   end
 
   create_table "tickets", force: :cascade do |t|
