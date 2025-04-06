@@ -1,7 +1,11 @@
 class AuthController < ApplicationController
   def signup
-    user = User.create!(name: params[:name], email: params[:email])
-    render json: { token: user.auth_token, user: user }
+    begin
+      user = User.create!(name: params[:name], email: params[:email])
+      render json: { token: user.auth_token, user: user }
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { error: e.message }, status: :unprocessable_entity
+    end
   end
 
   def login
