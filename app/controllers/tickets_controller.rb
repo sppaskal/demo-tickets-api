@@ -2,6 +2,11 @@ class TicketsController < ApplicationController
 
   before_action :authenticate_user!
 
+  def index
+    tickets = current_user.tickets.includes(:event, :seat)
+    render json: tickets.as_json(include: :event)
+  end
+
   def create
     seat = Seat.find_by(id: params[:seat_id], event_id: params[:event_id])
 

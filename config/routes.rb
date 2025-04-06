@@ -9,5 +9,5 @@ Rails.application.routes.draw do
 
   resources :events, only: [:index, :show, :create]
 
-  resources :tickets, only: [:create]
+  resources :tickets, only: [:index, :create]
 end
