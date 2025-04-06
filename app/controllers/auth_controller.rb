@@ -7,8 +7,7 @@ class AuthController < ApplicationController
   def login
     user = User.find_by(email: params[:email])
     if user
-      # Refresh the auth token by invoking the model's method directly
-      user.update!(auth_token: SecureRandom.hex(10)) unless user.auth_token.present?
+      user.generate_auth_token if user.auth_token.blank?
       render json: { token: user.auth_token, user: user }
     else
       render json: { error: 'Invalid email' }, status: :unauthorized
