@@ -1,4 +1,5 @@
 class EventsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_organization, only: [:index, :create, :update, :destroy]
   before_action :set_event, only: [:update, :destroy, :purchase_ticket]
 
@@ -39,20 +40,18 @@ class EventsController < ApplicationController
   end
 
   def purchase_ticket
-    ticket = @event.tickets.create!(
-      user: current_user,
-      seat_row: params[:seat_row],
-      seat_number: params[:seat_number],
-      price: params[:price]
-    )
+    seat = Seat.find_by(id: params[:seat_id], reserved: false)
+    return render json: { error: "Seat unavailable" }, status: :unprocessable_entity unless seat
+  
+    ticket = Ticket.create!(user: current_user, event: @event, seat: seat)
+    seat.update!(reserved: true)
     render json: ticket, status: :created
   end
 
   private
 
-  def current_user
-    # Stubbed for now: Replace with real authentication later
-    User.find_by(email: request.headers['X-User-Email']) || User.first
+  def authenticate_user!
+    render json: { error: "Authorization required" }, status: :unauthorized unless current_user
   end
 
   def set_organization
