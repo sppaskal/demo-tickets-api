@@ -1,4 +1,7 @@
+
 Rails.application.routes.draw do
+  root to: "home#index"
+  get "home/index"
   # Authentication routes
   post '/signup', to: 'auth#signup'
   post '/login', to: 'auth#login'
@@ -10,4 +13,5 @@ Rails.application.routes.draw do
   resources :events, only: [:index, :show, :create]
 
   resources :tickets, only: [:index, :create]
+  
 end
