@@ -60,10 +60,6 @@ class EventsController < ApplicationController
 
   private
 
-  def authenticate_user!
-    render json: { error: "Authorization required" }, status: :unauthorized unless current_user
-  end
-
   def set_organization
     @organization = Organization.find_by(id: params[:organization_id])
   end

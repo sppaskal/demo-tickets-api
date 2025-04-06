@@ -7,4 +7,8 @@ class ApplicationController < ActionController::API
   rescue ActiveRecord::RecordNotFound
     nil
   end
+
+  def authenticate_user!
+    render json: { error: "Authorization required" }, status: :unauthorized unless current_user
+  end
 end

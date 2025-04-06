@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     resources :events, only: [:index, :create, :update, :destroy]
   end
 
-  resources :events, only: [:index, :show, :create] do
-    post 'purchase_ticket', on: :member
-  end
+  resources :events, only: [:index, :show, :create]
+
+  resources :tickets, only: [:create]
 end
