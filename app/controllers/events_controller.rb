@@ -12,12 +12,22 @@ class EventsController < ApplicationController
   end
 
   def create
-    admin = @organization.admin
-    if current_user == admin
-      event = @organization.events.create!(event_params)
+    # Find the organization where the current user is the admin
+    organization = Organization.find_by(admin_user_id: current_user.id)
+  
+    unless organization
+      return render json: { error: 'Unauthorized: No associated organization found' }, status: :unauthorized
+    end
+  
+    # Build the event under the found organization
+    event = organization.events.build(event_params)
+  
+    if event.save
+      # Generate the seat layout
+      generate_seats(event, params[:rows].to_i, params[:columns].to_i, params[:price].to_d)
       render json: event, status: :created
     else
-      render json: { error: "Not authorized" }, status: :unauthorized
+      render json: { error: event.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -64,5 +74,27 @@ class EventsController < ApplicationController
 
   def event_params
     params.require(:event).permit(:name, :date, :location)
+  end
+
+  # Generate rectangular seat layout
+  def generate_seats(event, rows, columns, price)
+    row_labels = ('A'..'Z').to_a
+    rows.times do |i|
+      row_label = row_labels[i] || "R#{i+1}"  # fallback for beyond Z
+      (1..columns).each do |num|
+        Seat.create!(
+          event: event,
+          seat_row: row_label,
+          seat_number: num.to_s,
+          price: price,
+          reserved: false
+        )
+      end
+    end
+  end
+
+  # Checks if the user is the admin of an organization
+  def admin_for_organization?(user)
+    Organization.exists?(admin_user_id: user.id)
   end
 end
