@@ -71,9 +71,4 @@ class EventsController < ApplicationController
   def event_params
     params.require(:event).permit(:name, :date, :location)
   end
-
-  # Checks if the user is the admin of an organization
-  def admin_for_organization?(user)
-    Organization.exists?(admin_user_id: user.id)
-  end
 end
