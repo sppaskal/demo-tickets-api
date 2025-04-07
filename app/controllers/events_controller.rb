@@ -23,8 +23,8 @@ class EventsController < ApplicationController
     event = organization.events.build(event_params)
   
     if event.save
-      # Generate the seat layout
-      generate_seats(event, params[:rows].to_i, params[:columns].to_i, params[:price].to_d)
+      # Generate the seat layout using the instance method from the Event model
+      event.generate_seats(params[:rows].to_i, params[:columns].to_i, params[:price].to_d)
       render json: event, status: :created
     else
       render json: { error: event.errors.full_messages }, status: :unprocessable_entity
@@ -70,23 +70,6 @@ class EventsController < ApplicationController
 
   def event_params
     params.require(:event).permit(:name, :date, :location)
-  end
-
-  # Generate rectangular seat layout
-  def generate_seats(event, rows, columns, price)
-    row_labels = ('A'..'Z').to_a
-    rows.times do |i|
-      row_label = row_labels[i] || "R#{i+1}"  # fallback for beyond Z
-      (1..columns).each do |num|
-        Seat.create!(
-          event: event,
-          seat_row: row_label,
-          seat_number: num.to_s,
-          price: price,
-          reserved: false
-        )
-      end
-    end
   end
 
   # Checks if the user is the admin of an organization

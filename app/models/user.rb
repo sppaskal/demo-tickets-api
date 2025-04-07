@@ -6,8 +6,6 @@ class User < ApplicationRecord
 
   before_create :generate_auth_token
 
-  private
-
   def generate_auth_token
     self.auth_token = SecureRandom.hex(10)
   end
