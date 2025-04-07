@@ -1,7 +1,7 @@
 class EventsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_organization, only: [:index, :create, :update, :destroy]
-  before_action :set_event, only: [:update, :destroy, :purchase_ticket]
+  before_action :set_event, only: [:update, :destroy]
 
   def index
     if @organization
@@ -47,15 +47,6 @@ class EventsController < ApplicationController
     else
       render json: { error: "Not authorized" }, status: :unauthorized
     end
-  end
-
-  def purchase_ticket
-    seat = Seat.find_by(id: params[:seat_id], reserved: false)
-    return render json: { error: "Seat unavailable" }, status: :unprocessable_entity unless seat
-  
-    ticket = Ticket.create!(user: current_user, event: @event, seat: seat)
-    seat.update!(reserved: true)
-    render json: ticket, status: :created
   end
 
   private
