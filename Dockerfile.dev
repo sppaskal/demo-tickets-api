@@ -1,0 +1,43 @@
+# syntax=docker/dockerfile:1
+# check=error=true
+
+ARG RUBY_VERSION=3.4.2
+FROM docker.io/library/ruby:$RUBY_VERSION-slim
+
+WORKDIR /rails
+
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y \
+    build-essential \
+    curl \
+    git \
+    libjemalloc2 \
+    libvips \
+    libyaml-dev \
+    sqlite3 \
+    dos2unix && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+ENV RAILS_ENV=development \
+    BUNDLE_PATH=/usr/local/bundle
+
+# Copy all files first
+COPY . .
+
+# Install gems
+RUN bundle install
+
+# Precompile bootsnap
+RUN bundle exec bootsnap precompile app/ lib/
+
+# Fix line endings and shebang lines for bin scripts
+RUN find bin/ -type f -exec dos2unix {} \; && \
+    find bin/ -type f -exec sed -i 's/#!.*ruby.*/#!\/usr\/bin\/env ruby/' {} \; && \
+    find bin/ -type f -exec sed -i 's/\r$//g' {} \; && \
+    chmod +x bin/* && \
+    echo "Shebang lines after fix:" && \
+    find bin/ -type f -exec head -n 1 {} \;
+
+EXPOSE 3000
+
+CMD ["bin/rails", "server", "-b", "0.0.0.0"]
