@@ -35,6 +35,7 @@ RUN find bin/ -type f -exec dos2unix {} \; && \
     find bin/ -type f -exec sed -i 's/#!.*ruby.*/#!\/usr\/bin\/env ruby/' {} \; && \
     find bin/ -type f -exec sed -i 's/\r$//g' {} \; && \
     chmod +x bin/* && \
+    chmod +x entrypoint.sh && \
     echo "Shebang lines after fix:" && \
     find bin/ -type f -exec head -n 1 {} \;
 
