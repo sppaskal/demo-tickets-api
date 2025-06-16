@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     entrypoint: ["/rails/entrypoint.sh"]
-    command: ruby bin/rails server -b 0.0.0.0
+    command: bin/rails server -b 0.0.0.0
     volumes:
       - .:/rails
       - bundle:/usr/local/bundle
@@ -17,7 +17,30 @@ services:
       - RAILS_ENV=development
     stdin_open: true
     tty: true
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ../demo-tickets-fe  # Path to front-end project
+      dockerfile: Dockerfile
+    volumes:
+      - ../demo-tickets-fe:/app
+      - /app/node_modules  # Prevent node_modules from being overwritten
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:3000  # API URL for front-end
+    command: npm run dev
+    depends_on:
+      - web
+    networks:
+      - app-network
 
 volumes:
   bundle:
   sqlite_data:
+
+networks:
+  app-network:
+    driver: bridge
