@@ -1,24 +1,74 @@
-# README
+# Demo Tickets API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A Ruby on Rails API for managing events, seats, and tickets, designed to work with the `demo-tickets-fe` front-end (https://github.com/sppaskal/demo-tickets-fe). This project runs in Docker, serving the API at `http://localhost:3000`.
 
-Things you may want to cover:
+## Overview
 
-* Ruby version
+This API provides endpoints for user authentication, event browsing, and ticket purchasing. It uses SQLite for development and is containerized with Docker for easy setup.
 
-* System dependencies
+## Prerequisites
 
-* Configuration
+- Docker and Docker Compose installed:
+  - Windows/Mac: [Docker Desktop](https://www.docker.com/products/docker-desktop/) with WSL 2 enabled (Windows).
+  - Linux: [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/).
+- Git installed.
 
-* Database creation
+## Setup Instructions
 
-* Database initialization
+1. **Clone the Repository**
 
-* How to run the test suite
+   ```bash
+   git clone https://github.com/sppaskal/demo-tickets-api.git
+   cd demo-tickets-api
+   ```
 
-* Services (job queues, cache servers, search engines, etc.)
+2. **Build and Run with Docker Compose**
 
-* Deployment instructions
+   Build the Docker images and start the services:
 
-* ...
+   ```bash
+   docker-compose up --build
+   ```
+
+   - Runs the Rails API at `http://localhost:3000`.
+   - If `demo-tickets-fe` is cloned in the parent directory, the front-end runs at `http://localhost:5173`.
+
+3. **Verify the API**
+
+   Test the login endpoint:
+
+   ```bash
+   curl -X POST -H "Content-Type: application/json" -H "Accept: application/json" -d '{"email": "alice@example.com"}' http://localhost:3000/login
+   ```
+
+   Expected output:
+   ```json
+   {"token": "user1token"}
+   ```
+
+4. **Run the Front-End (Optional)**
+
+   To use the API with the front-end:
+
+   - Clone the front-end repository:
+     ```bash
+     cd ..
+     git clone https://github.com/sppaskal/demo-tickets-fe.git
+     cd demo-tickets-api
+     ```
+   - Re-run Docker Compose:
+     ```bash
+     docker-compose up --build
+     ```
+   - Access the front-end at `http://localhost:5173/login`.
+
+## Stopping the Application
+
+- Stop containers:
+  ```bash
+  docker-compose down
+  ```
+- Stop and remove volumes (resets database):
+  ```bash
+  docker-compose down -v
+  ```
