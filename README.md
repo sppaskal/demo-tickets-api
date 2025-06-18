@@ -72,3 +72,7 @@ This API provides endpoints for user authentication, event browsing, and ticket 
   ```bash
   docker-compose down -v
   ```
+
+  ## Notes
+
+  - The 'Demo Tickets API.postman_collection.json' file in the root of the project contains PostMan collection for every endpoint on the back-end. 
