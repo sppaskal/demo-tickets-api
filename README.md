@@ -50,7 +50,7 @@ This API provides endpoints for user authentication, event browsing, and ticket 
 
    To use the API with the front-end:
 
-   - Clone the front-end repository:
+   - Clone the front-end repository to the same directory as `demo-tickets-api`:
      ```bash
      cd ..
      git clone https://github.com/sppaskal/demo-tickets-fe.git
