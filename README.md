@@ -4,7 +4,7 @@ A Ruby on Rails API for managing events, seats, and tickets, designed to work wi
 
 ## Overview
 
-This API provides endpoints for user authentication, event browsing, and ticket purchasing. It uses SQLite for development and is containerized with Docker for easy setup.
+This API provides endpoints for user authentication, event browsing/creation/editing, and ticket purchasing. It uses SQLite for development and is containerized with Docker for easy setup.
 
 ## Prerequisites
 
